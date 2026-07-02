@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerador de Atributos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="rpg-layout">
+    <div id="sidebar"></div>
+
+    <main class="main-content">
+        <div class="stat-block">
+            <h2 class="panel-title">Gerador de Atributos</h2>
+                <p class="description">Role novamente se nenhum atributo for 14 ou maior.</p>
+            
+            <button class="roll-btn" id="generate-btn">Rolar Atributos (3d6)</button>
+            
+            <table class="abilities-table">
+        <thead>
+            <tr>
+                <th>Atributo</th>
+                <th>Valor</th>
+                <th>Modificador</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="ability-name">FOR (Força)</td>
+                <td class="ability-score" id="for-score">--</td>
+                <td class="ability-mod" id="for-mod">--</td>
+            </tr>
+            <tr>
+                <td class="ability-name">DES (Destreza)</td>
+                <td class="ability-score" id="des-score">--</td>
+                <td class="ability-mod" id="des-mod">--</td>
+            </tr>
+            <tr>
+                <td class="ability-name">CON (Constituição)</td>
+                <td class="ability-score" id="con-score">--</td>
+                <td class="ability-mod" id="con-mod">--</td>
+            </tr>
+            <tr>
+                <td class="ability-name">INT (Inteligência)</td>
+                <td class="ability-score" id="int-score">--</td>
+                <td class="ability-mod" id="int-mod">--</td>
+            </tr>
+            <tr>
+                <td class="ability-name">SAB (Sabedoria)</td>
+                <td class="ability-score" id="sab-score">--</td>
+                <td class="ability-mod" id="sab-mod">--</td>
+            </tr>
+            <tr>
+                <td class="ability-name">CAR (Carisma)</td>
+                <td class="ability-score" id="car-score">--</td>
+                <td class="ability-mod" id="car-mod">--</td>
+            </tr>
+        </tbody>
+    </table>
+        </div>
+    </main>
+</div>
+
+<script src="main.js"></script>
+<script src="attributes.js"></script>
+
+</body>
+</html>

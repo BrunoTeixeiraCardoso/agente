@@ -1,0 +1,93 @@
+{
+  "personal": {
+    "name": "Bruno Teixeira Cardoso",
+    "age": "33 years old",
+    "profession": "QA / Test Analyst",
+    "location": "Brazil",
+    "email": "brunotcdesign@gmail.com",
+    "linkedin": "https://linkedin.com/in/brunotcdesign"
+  },
+  "summary": "QA Test Analyst focused on functional testing, automation, and software quality assurance. Experienced in creating and executing test scenarios based on product requirements using Agile methodologies and industry-standard tools such as JIRA and Qase.",
+  "experience": [
+    {
+      "role": "QA / Test Analyst",
+      "company": "SysMap Solutions",
+      "period": "June 2024 — Present",
+      "duration": "2 years",
+      "activities": [
+        "Executing functional tests to validate system features and behavior.",
+        "Creating and executing test cases and scenarios based on product requirements.",
+        "Logging and tracking defects using JIRA and Qase.",
+        "Collaborating with development teams in Agile environments.",
+        "Supporting test planning and quality assurance processes.",
+        "Developing test automation scripts using Selenium WebDriver with Java.",
+        "Performing API testing with Postman.",
+        "Analyzing data and reporting metrics using Excel charts."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "course": "Associate Degree in Systems Analysis and Development",
+      "institution": "UNINTER — BH Centro, Venda Nova and Contagem",
+      "period": "February 2023 — June 2025"
+    }
+  ],
+  "skills": [
+    "Software Testing",
+    "QA / QC",
+    "Selenium WebDriver",
+    "Agile Methodologies",
+    "JIRA",
+    "API Testing",
+    "Postman",
+    "Git / GitHub",
+    "Excel for Data Analysis"
+  ],
+  "courses": [
+    {
+      "title": "Quality Assurance Bootcamp",
+      "description": "Manual testing and QA processes"
+    },
+    {
+      "title": "Complete Java",
+      "description": "Object-Oriented Programming + Projects"
+    },
+    {
+      "title": "Functional Testing with Selenium WebDriver",
+      "description": "Creating and executing functional tests with Selenium WebDriver with Java"
+    },
+    {
+      "title": "AI Literacy",
+      "description": "Artificial Intelligence fundamentals"
+    },
+    {
+      "title": "Introduction to Prompt Engineering",
+      "description": "Creating effective prompts for AI"
+    },
+    {
+      "title": "Foundations of Modern AI: Machine Learning, LLMs, Generative AI, and Agents",
+      "description": "Fundamental concepts of modern AI, including machine learning, LLMs, generative AI, and agents"
+    }
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Intermediate"
+    },
+    {
+      "language": "Portuguese",
+      "level": "Native"
+    }
+  ],
+  "theme": {
+    "bgColor": "#f8fafc",
+    "containerBg": "#ffffff",
+    "textMain": "#1e293b",
+    "textMuted": "#64748b",
+    "primary": "#0284c7",
+    "primaryDark": "#0f172a",
+    "borderColor": "#e2e8f0",
+    "tagBg": "#f1f5f9"
+  }
+}

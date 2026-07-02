@@ -1,0 +1,29 @@
+{
+  "title": "Tabela de Nomes",
+  "description": "Lista aleatória de nomes para personagens e NPCs",
+  "entries": 
+[
+  {"id": 1, "male": "Apex", "female": "Ada"},
+  {"id": 2, "male": "Byte", "female": "Blaze"},
+  {"id": 3, "male": "Crash", "female": "Cipher"},
+  {"id": 4, "male": "Data", "female": "Dex"},
+  {"id": 5, "male": "Echo", "female": "Electra"},
+  {"id": 6, "male": "Flux", "female": "Frost"},
+  {"id": 7, "male": "Glitch", "female": "Gear"},
+  {"id": 8, "male": "Hacker", "female": "Helix"},
+  {"id": 9, "male": "Ion", "female": "Iris"},
+  {"id": 10, "male": "Jack", "female": "Kira"},
+  {"id": 11, "male": "Kael", "female": "Laser"},
+  {"id": 12, "male": "Link", "female": "Matrix"},
+  {"id": 13, "male": "Max", "female": "Mirage"},
+  {"id": 14, "male": "Neon", "female": "Nova"},
+  {"id": 15, "male": "Onyx", "female": "Orbit"},
+  {"id": 16, "male": "Pulse", "female": "Pixel"},
+  {"id": 17, "male": "Ray", "female": "Rogue"},
+  {"id": 18, "male": "Static", "female": "Synapse"},
+  {"id": 19, "male": "Turbo", "female": "Trinity"},
+  {"id": 20, "male": "Vector", "female": "Vapor"}
+]
+
+  
+}

@@ -1,0 +1,93 @@
+{
+  "pessoal": {
+    "nome": "Bruno Teixeira Cardoso",
+    "idade": "33 anos",
+    "profissao": "Analista de Testes (QA)",
+    "localizacao": "Brasil",
+    "email": "brunotcdesign@gmail.com",
+    "linkedin": "https://linkedin.com/in/brunotcdesign"
+  },
+  "resumo": "Analista de testes (QA) focado em testes funcionais, automação e garantia de qualidade de software. Experiência na criação e execução de cenários de testes baseados em requisitos de produto utilizando metodologias ágeis e ferramentas de mercado como JIRA e Qase.",
+  "experiencia": [
+    {
+      "cargo": "Analista de Teste / QA",
+      "empresa": "SysMap Solutions",
+      "periodo": "Junho de 2024 — Atual",
+      "duracao": "2 anos",
+      "atividades": [
+        "Execução de testes funcionais para validar funcionalidades e comportamento do sistema.",
+        "Criação e execução de casos e cenários de teste com base nos requisitos do produto.",
+        "Registro e acompanhamento de defeitos utilizando JIRA e Qase.",
+        "Colaboração com equipes de desenvolvimento em ambientes ágeis.",
+        "Apoio no planejamento de testes e processos de garantia de qualidade.",
+        "Desenvolvimento de scripts de automação de testes utilizando Selenium WebDriver com Java.",
+        "Testes de API com Postman.",
+        "Análises e relatórios com gráficos utilizando Excel."
+      ]
+    }
+  ],
+  "educacao": [
+    {
+      "curso": "Curso Superior de Tecnologia (CST), Análise e Desenvolvimento de Sistemas",
+      "instituicao": "UNINTER — BH Centro, Venda Nova e Contagem",
+      "periodo": "Fevereiro de 2023 — Junho de 2025"
+    }
+  ],
+  "competencias": [
+    "Teste de Software",
+    "QA / QC",
+    "WebDriver Selenium",
+    "Metodologias Ágeis",
+    "JIRA",
+    "Testes de API",
+    "Postman",
+    "Git / GitHub",
+    "Excel para Análise de Dados"
+  ],
+  "cursos": [
+    {
+      "titulo": "Bootcamp Quality Assurance",
+      "descricao": "testes manuais e processos de QA"
+    },
+    {
+      "titulo": "Java COMPLETO",
+      "descricao": "Programação Orientada a Objetos + Projetos"
+    },
+    {
+      "titulo": "Testes funcionais com Selenium WebDriver",
+      "descricao": "Criação e execução de testes funcionais com Selenium WebDriver com Java"
+    },
+    {
+      "titulo": "AI Literacy",
+      "descricao": "Noções básicas de inteligência artificial"
+    },
+    {
+      "titulo": "Introdução à Engenharia de Prompts",
+      "descricao": "Criação de prompts eficazes para IA"
+    },
+       {
+      "titulo": "Fundamentos da IA Moderna: Machine Learning, LLMs, IA Generativa e Agentes",
+      "descricao": "Conceitos fundamentais de IA moderna, incluindo machine learning, LLMs, IA generativa e agentes"
+    }
+  ],
+  "idiomas": [
+    {
+      "idioma": "Inglês",
+      "nivel": "Intermediário"
+    },
+    {
+      "idioma": "Português",
+      "nivel": "Nativo"
+    }
+  ],
+  "tema": {
+    "bgColor": "#f8fafc",
+    "containerBg": "#ffffff",
+    "textMain": "#1e293b",
+    "textMuted": "#64748b",
+    "primary": "#0284c7",
+    "primaryDark": "#0f172a",
+    "borderColor": "#e2e8f0",
+    "tagBg": "#f1f5f9"
+  }
+}
