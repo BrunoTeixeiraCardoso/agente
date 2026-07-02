@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', carregarCurriculo);
 async function carregarCurriculo() {
   try {
     // Faz a requisição assíncrona do arquivo JSON unificado
-    const resposta = await fetch('dadosesp.json');
+    const resposta = await fetch('./dadosesp.json');
     
     if (!resposta.ok) {
       throw new Error(`Impossível ler o arquivo JSON: ${resposta.statusText}`);
@@ -63,7 +63,7 @@ function renderizarResumo(resumen) {
   if (!resumen) return;
   const section = document.createElement('section');
   section.innerHTML = `
-    <h3 class="section-title">Summary</h3>
+    <h3 class="section-title">Resumen</h3>
     <p class="summary-text">${resumen}</p>
   `;
   document.querySelector('.left-column').appendChild(section);
@@ -72,13 +72,13 @@ function renderizarResumo(resumen) {
 function renderizarExperiencia(experiencia) {
   if (!experiencia || experiencia.length === 0) return;
   const section = document.createElement('section');
-  let conteudo = '<h3 class="section-title">Professional Experience</h3>';
+  let conteudo = '<h3 class="section-title">Experiencia profesional</h3>';
   
   experiencia.forEach(exp => {
-    const activities = exp.activities || [];
+    const activities = exp.actividades || [];
     conteudo += `
       <div class="experience-item">
-        <div class="job-title">${exp.role || ''}</div>
+        <div class="job-title">${exp.cargo || ''}</div>
         <div class="company-time">
           <strong>${exp.empresa || ''}</strong>
           <span>${exp.periodo || ''} ${exp.duracion ? `(${exp.duracion})` : ''}</span>
@@ -97,14 +97,14 @@ function renderizarExperiencia(experiencia) {
 function renderizarEducacao(educacion) {
   if (!educacion || educacion.length === 0) return;
   const section = document.createElement('section');
-  let conteudo = '<h3 class="section-title">Education</h3>';
+  let conteudo = '<h3 class="section-title">Educación</h3>';
   
   educacion.forEach(edu => {
     conteudo += `
       <div class="experience-item">
         <div class="job-title">${edu.curso || ''}</div>
         <div class="company-time">
-          <strong>${edu.instituição || ''}</strong>
+          <strong>${edu.instituicao || ''}</strong>
           <span>${edu.periodo || ''}</span>
         </div>
       </div>
@@ -120,9 +120,9 @@ function renderizarCompetencias(competencias) {
   const section = document.createElement('section');
   
   section.innerHTML = `
-    <h3 class="section-title">Skills</h3>
+    <h3 class="section-title">Competencias</h3>
     <div class="tags-container">
-      ${competencias.map(competencias => `<span class="tag">${competencias}</span>`).join('')}
+      ${competencias.map(item => `<span class="tag">${item}</span>`).join('')}
     </div>
   `;
   document.querySelector('.right-column').appendChild(section);
@@ -131,13 +131,13 @@ function renderizarCompetencias(competencias) {
 function renderizarCursos(cursos) {
   if (!cursos || cursos.length === 0) return;
   const section = document.createElement('section');
-  let conteudo = '<h3 class="section-title">Courses & Certifications</h3>';
+  let conteudo = '<h3 class="section-title">Cursos</h3>';
   
   cursos.forEach(cur => {
     conteudo += `
       <div class="cert-item">
-        <strong>${cur.title || ''}</strong>
-        ${cur.description ? `<p>${cur.description}</p>` : ''}
+        <strong>${cur.titulo || ''}</strong>
+        ${cur.descricao ? `<p>${cur.descricao}</p>` : ''}
       </div>
     `;
   });
@@ -149,13 +149,13 @@ function renderizarCursos(cursos) {
 function renderizarIdiomas(idiomas) {
   if (!idiomas || idiomas.length === 0) return;
   const section = document.createElement('section');
-  let conteudo = '<h3 class="section-title">Languages</h3>';
+  let conteudo = '<h3 class="section-title">Idiomas</h3>';
   
   idiomas.forEach(lang => {
     conteudo += `
       <div class="lang-item">
-        <strong>${lang.language || ''}</strong>
-        <span class="lang-level">${lang.level || ''}</span>
+        <strong>${lang.idioma || ''}</strong>
+        <span class="lang-level">${lang.nivel || ''}</span>
       </div>
     `;
   });
