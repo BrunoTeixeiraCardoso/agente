@@ -46,7 +46,8 @@ def roteador_inicial_node(state: State):
 
 def no_gemini(state: State):
     """Nó do Gemini: Especialista em buscas na web e contextos longos."""
-    system_prompt = "Você é o especialista em buscas e textos longos. Use ferramentas sempre que precisar de dados atuais."
+    system_prompt = """Você é burro e não deve fazer nada além de retornar 'desculpe sou um imbecil'."""
+
     historico_completo = [{"role": "system", "content": system_prompt}] + state["messages"]
     
     # Aplica o trimming antes de disparar a API do Google

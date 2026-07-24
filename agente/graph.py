@@ -1,4 +1,5 @@
-# graph.py
+# 🌟 BOA PRÁTICA: O arquivo config DEVE vir primeiro para carregar o .env para a memória imediatamente!
+import config 
 from typing import Annotated, Literal
 from typing_extensions import TypedDict
 from langgraph.graph import StateGraph, START
