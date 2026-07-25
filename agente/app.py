@@ -1,26 +1,29 @@
-import streamlit as st
 import os
 from pathlib import Path
-from graph import agente_app, CONFIG_PADRAO
-# IMPORTAÇÃO DO NOVO COMPONENTE DE LOGS MODULAR
+
+import streamlit as st
+
+from graph import CONFIG_PADRAO, agente_app
 from interface_logs import executar_agente_com_logs_copilot
 
-# 1. Configurações visuais da página
+# Configura a aparência inicial da página da interface do agente.
 st.set_page_config(page_title="Agente de IA Modular", page_icon="🤖", layout="centered")
 st.title("🤖 Agente Estilo VS Code Copilot")
 st.caption("Interface limpa com gerenciador de logs modularizado")
 
-# Barra lateral para gerenciamento de memória e Upload de PDF
+# Barra lateral com opções de controle e upload de PDF.
 with st.sidebar:
     st.header("⚙️ Configurações")
+    # Limpa o histórico do chat da sessão atual.
     if st.button("🗑️ Limpar Histórico do Chat"):
         st.session_state.historico_chat = []
         st.rerun()
         
     st.markdown("---")
     st.header("📂 Enviar Documento")
+    # Permite ao usuário enviar um PDF para o agente processar.
     arquivo_enviado = st.file_uploader("Escolha um arquivo PDF para o agente ler:", type=["pdf"])
-    
+
     if arquivo_enviado:
         caminho_temporario = os.path.join(Path(__file__).parent, arquivo_enviado.name)
         with open(caminho_temporario, "wb") as f:
@@ -28,34 +31,31 @@ with st.sidebar:
         st.success(f"✅ Arquivo '{arquivo_enviado.name}' carregado!")
         st.session_state.caminho_pdf_atual = caminho_temporario
 
-# 2. Inicialização do Histórico na Sessão
+# Inicializa o histórico de mensagens para manter o chat persistente na sessão.
 if "historico_chat" not in st.session_state:
     st.session_state.historico_chat = []
 
-# 3. Exibe mensagens anteriores salvas na tela
+# Reexibe as mensagens já armazenadas para a interface parecer contínua.
 for mensagem in st.session_state.historico_chat:
     with st.chat_message(mensagem["role"]):
         st.write(mensagem["content"])
 
-# 4. Processamento do Input do Usuário
+# Captura a mensagem digitada pelo usuário e a envia para o agente.
 if prompt_usuario := st.chat_input("Como posso te ajudar hoje?"):
     with st.chat_message("user"):
         st.write(prompt_usuario)
     
     st.session_state.historico_chat.append({"role": "user", "content": prompt_usuario})
 
-    # Abre o balão de resposta do assistente
+    # Exibe o espaço de resposta do assistente e executa o fluxo do agente.
     with st.chat_message("assistant"):
         placeholder_resposta = st.empty()
         query = {"messages": [("user", prompt_usuario)]}
         
-        # =========================================================================
-        # 🔥 A MÁGICA DA MODULARIZAÇÃO AQUI:
-        # Chamamos a função externa que cuida de desenhar todos os logs na tela!
-        # =========================================================================
+        # Chama a função responsável por executar o agente e mostrar os logs na interface.
         resposta_final = executar_agente_com_logs_copilot(agente_app, query, CONFIG_PADRAO)
-            
-        # 5. Exibe a resposta final em texto logo abaixo dos logs fixos
+
+        # Mostra a resposta final do agente após o processamento.
         if resposta_final:
             placeholder_resposta.write(resposta_final)
             st.session_state.historico_chat.append({"role": "assistant", "content": resposta_final})
