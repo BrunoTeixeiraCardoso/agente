@@ -7,6 +7,7 @@ from typing_extensions import TypedDict
 # Importamos os modelos e a configuração que você criou
 from config import get_llms, CONFIG_PADRAO
 from tools import tools as default_tools
+from utils import injetar_contexto_temporal
 
 
 # 2. DEFINIÇÃO DO ESTADO
@@ -57,7 +58,7 @@ def criar_handlers(llm_gemini=None, llm_groq=None, ferramentas=None, trimmador=N
     def no_gemini(state: State):
         """Nó do Gemini: usa ferramentas e contexto mais amplo."""
         # 1. Pega o prompt modular lido do arquivo externo txt
-        system_prompt = CONFIG_PADRAO["system_prompt"]
+        system_prompt = injetar_contexto_temporal(CONFIG_PADRAO["system_prompt"])
         
         # 2. Poda o histórico da conversa baseado no limite de tokens configurado
         mensagens_otimizadas = trimmador.invoke(state["messages"])
@@ -72,7 +73,7 @@ def criar_handlers(llm_gemini=None, llm_groq=None, ferramentas=None, trimmador=N
     def no_groq(state: State):
         """Nó da Groq: foca em lógica, matemática e programação."""
         # 1. Pega o mesmo prompt modular lido do arquivo externo txt
-        system_prompt = CONFIG_PADRAO["system_prompt"]
+        system_prompt = injetar_contexto_temporal(CONFIG_PADRAO["system_prompt"])
         
         # 2. Poda o histórico da conversa baseado no limite de tokens
         mensagens_otimizadas = trimmador.invoke(state["messages"])
