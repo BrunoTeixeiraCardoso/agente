@@ -52,9 +52,30 @@ agente_app = criar_agente_app()
 CONFIG_PADRAO = config.get_default_config()
 
 
+# def extrair_resposta_do_evento(chunk) -> dict:
+#     """Extrai texto e métricas de tokens dos eventos retornados pelo grafo."""
+#     # Pega a resposta final do nó ativo e também os contadores de tokens usados.
+#     dados_resposta = {"texto": "", "tokens_input": 0, "tokens_output": 0}
+
+#     no_ativo = "no_gemini" if "no_gemini" in chunk else "no_groq" if "no_groq" in chunk else None
+
+#     if no_ativo:
+#         mensagens_do_no = chunk[no_ativo].get("messages", [])
+#         if mensagens_do_no:
+#             mensagem_ia = mensagens_do_no[-1]
+#             dados_resposta["texto"] = mensagem_ia.content
+
+#             metadata = getattr(mensagem_ia, "response_metadata", {})
+#             token_usage = metadata.get("token_usage", {})
+
+#             if token_usage:
+#                 dados_resposta["tokens_input"] = token_usage.get("prompt_tokens", 0)
+#                 dados_resposta["tokens_output"] = token_usage.get("completion_tokens", 0)
+
+#     return dados_resposta
+
 def extrair_resposta_do_evento(chunk) -> dict:
-    """Extrai texto e métricas de tokens dos eventos retornados pelo grafo."""
-    # Pega a resposta final do nó ativo e também os contadores de tokens usados.
+    """Extrai texto e métricas de tokens de forma robusta e multiplataforma."""
     dados_resposta = {"texto": "", "tokens_input": 0, "tokens_output": 0}
 
     no_ativo = "no_gemini" if "no_gemini" in chunk else "no_groq" if "no_groq" in chunk else None
@@ -65,11 +86,20 @@ def extrair_resposta_do_evento(chunk) -> dict:
             mensagem_ia = mensagens_do_no[-1]
             dados_resposta["texto"] = mensagem_ia.content
 
+            # Acessa os metadados da mensagem de IA
             metadata = getattr(mensagem_ia, "response_metadata", {})
+            
+            # Tenta pegar o token_usage padrão (Gemini / OpenAI padrão)
             token_usage = metadata.get("token_usage", {})
+            
+            # [MELHORIA MULTIPLATAFORMA]: Se o token_usage vier vazio (comum na Groq),
+            # tenta buscar em metadados alternativos ou aninhados da Groq
+            if not token_usage and "x_groq" in metadata:
+                token_usage = metadata["x_groq"].get("usage", {})
 
             if token_usage:
-                dados_resposta["tokens_input"] = token_usage.get("prompt_tokens", 0)
-                dados_resposta["tokens_output"] = token_usage.get("completion_tokens", 0)
+                # Busca pelas chaves tradicionais ou chaves alternativas comuns
+                dados_resposta["tokens_input"] = token_usage.get("prompt_tokens") or token_usage.get("input_tokens") or 0
+                dados_resposta["tokens_output"] = token_usage.get("completion_tokens") or token_usage.get("output_tokens") or 0
 
     return dados_resposta

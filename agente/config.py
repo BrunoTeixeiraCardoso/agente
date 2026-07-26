@@ -45,18 +45,6 @@ def get_default_config() -> dict:
 _cached_llms = None
 
 
-# def get_llms() -> dict:
-#     """Inicializa e reutiliza as instâncias dos modelos de linguagem."""
-#     global _cached_llms
-#     if _cached_llms is None:
-#         # Verifica se as chaves estão presentes antes de criar os clientes das IAs.
-#         validar_ambiente()
-#         _cached_llms = {
-#             "gemini": ChatGoogleGenerativeAI(model="gemini-3.5-flash", temperature=0),
-#             "groq": ChatGroq(model="llama-3.3-70b-versatile", temperature=0),
-#         }
-#     return _cached_llms
-
 def get_llms() -> dict:
     """Inicializa e reutiliza as instâncias dos modelos de linguagem."""
     global _cached_llms
