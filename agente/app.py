@@ -8,38 +8,22 @@ from interface_logs import executar_agente_com_logs_copilot
 # Configura a aparência inicial da página da interface do agente.
 st.set_page_config(page_title="Agente de IA Modular", page_icon="🤖", layout="centered")
 st.title("🤖 Agente Estilo VS Code Copilot")
-st.caption("Interface limpa com gerenciador de logs modularizado")
-
-# Configuração de caminhos do RAG local
-PASTA_DOS_LIVROS = "./meus_livros_rpg"
+st.caption("Interface de Chat limpa com painel lateral de monitoramento e telemetria")
 
 # Inicializa o histórico de mensagens para manter o chat persistente na sessão.
 if "historico_chat" not in st.session_state:
     st.session_state.historico_chat = []
 
-# Barra lateral com opções de controle e upload de PDF.
+# Barra lateral contendo opções administrativas e a área de streaming de logs
 with st.sidebar:
-    st.header("⚙️ Configurações")
-    if st.button("🗑️ Limpar Histórico do Chat"):
+    st.header("⚙️ Painel de Controle")
+    if st.button("🗑️ Limpar Histórico do Chat", use_container_width=True):
         st.session_state.historico_chat = []
         st.rerun()
         
     st.markdown("---")
-    st.header("📂 Enviar Documento para o RAG")
-    
-    # Permite ao usuário enviar um novo livro de RPG ou documento para a pasta monitorada
-    arquivo_enviado = st.file_uploader("Escolha um arquivo PDF para o agente ler:", type=["pdf"])
-
-    if arquivo_enviado:
-        # [CORREÇÃO RAG]: Garante que a pasta destino existe e salva o PDF no local correto do RAG
-        os.makedirs(PASTA_DOS_LIVROS, exist_ok=True)
-        caminho_final_pdf = os.path.join(PASTA_DOS_LIVROS, arquivo_enviado.name)
-        
-        with open(caminho_final_pdf, "wb") as f:
-            f.write(arquivo_enviado.getbuffer())
-            
-        st.success(f"✅ '{arquivo_enviado.name}' salvo na biblioteca de RPG!")
-        st.info("💡 Lembre-se de rodar o script 'indexar_rpg.py' no terminal para atualizar o banco de dados!")
+    st.header("📊 Console de Execução (Logs)")
+    st.caption("Acompanhe o comportamento interno dos nós do grafo e consumo de APIs abaixo:")
 
 # Reexibe as mensagens já armazenadas para a interface parecer contínua.
 for mensagem in st.session_state.historico_chat:
@@ -57,22 +41,31 @@ if prompt_usuario := st.chat_input("Como posso te ajudar hoje?"):
     with st.chat_message("assistant"):
         placeholder_resposta = st.empty()
         
-        # [CORREÇÃO MEMÓRIA]: Extrai as mensagens anteriores do session_state 
-        # para que o LangGraph e o trimmador analisem o contexto completo da conversa
+        # Extrai as mensagens anteriores do session_state para análise de contexto completa
         historico_formatado = []
         for msg in st.session_state.historico_chat:
             historico_formatado.append((msg["role"], msg["content"]))
             
         query = {"messages": historico_formatado}
         
-        # Executa o agente obtendo o retorno do fluxo através dos logs (Texto já vem limpo)
-        texto_limpo = executar_agente_com_logs_copilot(agente_app, query, CONFIG_PADRAO)
+        # [MUDANÇA VISUAL & OTIMIZAÇÃO]: Envia os logs dinâmicos e a telemetria do RAG 
+        # diretamente para o container da barra lateral, corrigindo também a chamada dupla anterior.
+        with st.sidebar:
+            resposta_bruta = executar_agente_com_logs_copilot(agente_app, query, CONFIG_PADRAO)
 
-        # [OTIMIZAÇÃO COMPLETA]: Removemos 40 linhas de Regex redundantes. 
-        # A função executar_agente_com_logs_copilot já utiliza a extração purificada do graph.py.
+        # [CORREÇÃO CRÍTICA ANTI-LISTA]: Garante a extração do texto se vier um objeto ou lista do Grafo
+        if isinstance(resposta_bruta, list) and len(resposta_bruta) > 0:
+            ultima_msg = resposta_bruta[-1]
+            texto_limpo = getattr(ultima_msg, "content", str(ultima_msg))
+        elif hasattr(resposta_bruta, "content"):
+            texto_limpo = resposta_bruta.content
+        else:
+            texto_limpo = str(resposta_bruta)
+
+        # Higienização de strings garantida contra aspas residuais
         texto_limpo = texto_limpo.strip().strip('"').strip("'")
 
-        # Mostra a resposta purificada e direta para o usuário
+        # Mostra a resposta purificada e direta na tela central do usuário
         if texto_limpo:
             placeholder_resposta.write(texto_limpo)
             st.session_state.historico_chat.append({"role": "assistant", "content": texto_limpo})

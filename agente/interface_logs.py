@@ -11,25 +11,11 @@ def executar_agente_com_logs_copilot(agente_app, query, CONFIG_PADRAO):
     total_output_tokens = 0
     numero_de_requisicoes = 0
 
-    if "parar_agente" not in st.session_state:
-        st.session_state.parar_agente = False
-
-    def interromper():
-        st.session_state.parar_agente = True
-
-    st.button("🛑 Interromper Agente", key="btn_cancelar", type="primary", on_click=interromper)
-    st.session_state.parar_agente = False
-
+    # Cria o container expandido de logs do ciclo de vida do grafo
     with st.status("Iniciando o agente modular...", expanded=True) as status:
         try:
             for chunk in agente_app.stream(query, CONFIG_PADRAO, stream_mode="updates"):
                 numero_de_requisicoes += 1
-                
-                # Checagem de interrupção
-                if st.session_state.parar_agente:
-                    status.update(label="⛔ Processamento cancelado pelo usuário!", state="error")
-                    st.warning("A execução do grafo foi interrompida no meio do caminho.")
-                    st.stop()
                 
                 # 🔀 NÓ: ROTEADOR INICIAL
                 if "roteador" in chunk:
@@ -43,7 +29,6 @@ def executar_agente_com_logs_copilot(agente_app, query, CONFIG_PADRAO):
                     contexto = chunk["no_rag_gemini"].get("contexto_documentos", "")
                     if contexto:
                         st.write("✅ **RAG**: Documentos históricos e regras de RPG localizados com sucesso!")
-                        # Exibe detalhes profundos dos documentos recuperados de forma organizada
                         with st.expander("🔍 Inspecionar trechos extraídos dos PDFs"):
                             st.caption("Abaixo estão os blocos de texto injetados no contexto da IA:")
                             st.code(contexto[:1500] + "\n\n[... Conteúdo truncado para exibição ...]" if len(contexto) > 1500 else contexto, language="text")
@@ -54,7 +39,7 @@ def executar_agente_com_logs_copilot(agente_app, query, CONFIG_PADRAO):
                 elif "no_gemini" in chunk:
                     status.update(label="🧠 Gemini: Processando e gerando resposta...", state="running")
                     
-                    # Verifica se o modelo acionou ou sugeriu uma ferramenta antes de responder por completo
+                    # Verifica se o modelo sugeriu acionamento de ferramentas antes de responder
                     mensagens_gemini = chunk["no_gemini"].get("messages", [])
                     if mensagens_gemini and hasattr(mensagens_gemini[-1], "tool_calls") and mensagens_gemini[-1].tool_calls:
                         chamada = mensagens_gemini[-1].tool_calls[0]
@@ -107,7 +92,7 @@ def executar_agente_com_logs_copilot(agente_app, query, CONFIG_PADRAO):
                         else:
                             st.code(resultado_bruto[:1000] + "..." if len(str(resultado_bruto)) > 1000 else resultado_bruto)
 
-            # Resumo da Telemetria Final
+            # Resumo de Telemetria Final
             st.markdown("---")
             st.markdown("**📊 Telemetria detalhada de consumo desta rodada:**")
             col1, col2, col3 = st.columns(3)
