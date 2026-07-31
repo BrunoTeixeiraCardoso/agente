@@ -29,11 +29,6 @@ def validar_ambiente() -> None:
         )
 
 
-# def get_default_config() -> dict:
-#     """Retorna a configuração padrão compartilhada pelo fluxo."""
-#     # Define limites simples de execução para evitar loops excessivos ou respostas longas.
-#     return {"recursion_limit": 10, "max_tokens": 6}
-
 def get_default_config() -> dict:
     return {
         "recursion_limit": 10, 

@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-
 import streamlit as st
 
 from graph import CONFIG_PADRAO, agente_app
@@ -11,29 +10,36 @@ st.set_page_config(page_title="Agente de IA Modular", page_icon="🤖", layout="
 st.title("🤖 Agente Estilo VS Code Copilot")
 st.caption("Interface limpa com gerenciador de logs modularizado")
 
+# Configuração de caminhos do RAG local
+PASTA_DOS_LIVROS = "./meus_livros_rpg"
+
+# Inicializa o histórico de mensagens para manter o chat persistente na sessão.
+if "historico_chat" not in st.session_state:
+    st.session_state.historico_chat = []
+
 # Barra lateral com opções de controle e upload de PDF.
 with st.sidebar:
     st.header("⚙️ Configurações")
-    # Limpa o histórico do chat da sessão atual.
     if st.button("🗑️ Limpar Histórico do Chat"):
         st.session_state.historico_chat = []
         st.rerun()
         
     st.markdown("---")
-    st.header("📂 Enviar Documento")
-    # Permite ao usuário enviar um PDF para o agente processar.
+    st.header("📂 Enviar Documento para o RAG")
+    
+    # Permite ao usuário enviar um novo livro de RPG ou documento para a pasta monitorada
     arquivo_enviado = st.file_uploader("Escolha um arquivo PDF para o agente ler:", type=["pdf"])
 
     if arquivo_enviado:
-        caminho_temporario = os.path.join(Path(__file__).parent, arquivo_enviado.name)
-        with open(caminho_temporario, "wb") as f:
+        # [CORREÇÃO RAG]: Garante que a pasta destino existe e salva o PDF no local correto do RAG
+        os.makedirs(PASTA_DOS_LIVROS, exist_ok=True)
+        caminho_final_pdf = os.path.join(PASTA_DOS_LIVROS, arquivo_enviado.name)
+        
+        with open(caminho_final_pdf, "wb") as f:
             f.write(arquivo_enviado.getbuffer())
-        st.success(f"✅ Arquivo '{arquivo_enviado.name}' carregado!")
-        st.session_state.caminho_pdf_atual = caminho_temporario
-
-# Inicializa o histórico de mensagens para manter o chat persistente na sessão.
-if "historico_chat" not in st.session_state:
-    st.session_state.historico_chat = []
+            
+        st.success(f"✅ '{arquivo_enviado.name}' salvo na biblioteca de RPG!")
+        st.info("💡 Lembre-se de rodar o script 'indexar_rpg.py' no terminal para atualizar o banco de dados!")
 
 # Reexibe as mensagens já armazenadas para a interface parecer contínua.
 for mensagem in st.session_state.historico_chat:
@@ -47,67 +53,27 @@ if prompt_usuario := st.chat_input("Como posso te ajudar hoje?"):
     
     st.session_state.historico_chat.append({"role": "user", "content": prompt_usuario})
 
-
- # Exibe o espaço de resposta do assistente e executa o fluxo do agente.
+    # Exibe o espaço de resposta do assistente e executa o fluxo do agente.
     with st.chat_message("assistant"):
         placeholder_resposta = st.empty()
-        query = {"messages": [("user", prompt_usuario)]}
         
-        # Executa o agente obtendo o retorno do fluxo através dos logs
-        resposta_bruta = executar_agente_com_logs_copilot(agente_app, query, CONFIG_PADRAO)
-
-
-   # --- FILTRO INTELIGENTE ANTI-POLUIÇÃO (VERSÃO ANTIESTRUTURADA) ---
-        if hasattr(resposta_bruta, "content"):
-            texto_bruto = str(resposta_bruta.content)
-        else:
-            texto_bruto = str(resposta_bruta)
-
-        texto_limpo = ""
-
-        # Verifica se a resposta veio poluída com a estrutura da API do Gemini
-        if '"text":' in texto_bruto or "extras" in texto_bruto:
-            import re
+        # [CORREÇÃO MEMÓRIA]: Extrai as mensagens anteriores do session_state 
+        # para que o LangGraph e o trimmador analisem o contexto completo da conversa
+        historico_formatado = []
+        for msg in st.session_state.historico_chat:
+            historico_formatado.append((msg["role"], msg["content"]))
             
-            # REGRAS DE REGEX EXTRA-PRECISAS:
-            # 1. Procura pelo padrão "text":"CONTEÚDO" ou "text" : "CONTEÚDO"
-            padrao_aspas_duplas = re.search(r'"text"\s*:\s*"([^"]+)"', texto_bruto)
-            # 2. Procura pelo padrão caso venha com aspas simples
-            padrao_aspas_simples = re.search(r"'text'\s*:\s*'([^']+)'", texto_bruto)
-            
-            if padrao_aspas_duplas:
-                texto_limpo = padrao_aspas_duplas.group(1)
-            elif padrao_aspas_simples:
-                texto_limpo = padrao_aspas_simples.group(1)
-            else:
-                # Se a Regex falhar, limpa na força bruta removendo tudo a partir da palavra "extras"
-                import json
-                try:
-                    # Adiciona chaves para tentar ler como JSON se necessário
-                    if not texto_bruto.strip().startswith("{"):
-                        texto_bruto = f"{{{texto_bruto}}}"
-                    dados_json = json.loads(texto_bruto)
-                    texto_limpo = dados_json.get("text", texto_bruto)
-                except Exception:
-                    # Corta a string antes de aparecer a palavra "extras" se ela estiver no final
-                    if "extras" in texto_bruto:
-                        texto_limpo = texto_bruto.split('"extras"')[0].split("'extras'")[0]
-                        # Remove chaves ou vírgulas que sobraram do corte
-                        texto_limpo = re.sub(r'["\'\{\}\s,:]*(text|type)*["\'\{\}\s,:]*', '', texto_limpo)
-                    else:
-                        texto_limpo = texto_bruto
-        else:
-            # Se já veio limpo de fábrica, apenas atribui
-            texto_limpo = texto_bruto
-
-        # Resolve problemas de codificação de quebras de linha textuais literais (\n)
-        texto_limpo = texto_limpo.replace("\\n", "\n")
+        query = {"messages": historico_formatado}
         
-        # Limpa possíveis aspas residuais que sobram no início ou final do texto extraído
+        # Executa o agente obtendo o retorno do fluxo através dos logs (Texto já vem limpo)
+        texto_limpo = executar_agente_com_logs_copilot(agente_app, query, CONFIG_PADRAO)
+
+        # [OTIMIZAÇÃO COMPLETA]: Removemos 40 linhas de Regex redundantes. 
+        # A função executar_agente_com_logs_copilot já utiliza a extração purificada do graph.py.
         texto_limpo = texto_limpo.strip().strip('"').strip("'")
 
-        # Mostra a resposta 100% purificada e direta para o usuário
-        if texto_limpo.strip():
+        # Mostra a resposta purificada e direta para o usuário
+        if texto_limpo:
             placeholder_resposta.write(texto_limpo)
             st.session_state.historico_chat.append({"role": "assistant", "content": texto_limpo})
         else:
