@@ -1,8 +1,10 @@
 # helpers_grafo.py
 import os
 from langchain_core.messages import trim_messages
-from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
+# [MUDANÇA CRÍTICA]: Importação do modelo de embeddings local e gratuito
+from langchain_huggingface import HuggingFaceEmbeddings 
+
 from config import get_llms, CONFIG_PADRAO
 from tools import tools as default_tools
 
@@ -37,13 +39,14 @@ def inicializar_dependencias_grafo(llm_gemini=None, llm_groq=None, ferramentas=N
     
     if os.path.exists(PASTA_DO_BANCO_DADOS):
         try:
-            embeddings = OpenAIEmbeddings()
+            # [CORREÇÃO ECOSSISTEMA]: Instancia o mapeador local e gratuito compatível com o indexador
+            embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
             banco_vetorial = Chroma(
                 persist_directory=PASTA_DO_BANCO_DADOS, 
                 embedding_function=embeddings
             )
         except Exception as e:
-            print(f"⚠️ [RAG] Falha ao pré-carregar o ChromaDB: {e}")
+            print(f"⚠️ [RAG] Falha ao pré-carregar o ChromaDB local: {e}")
 
     # Retorna tudo estruturado para o nó consumir
     return {
